@@ -5,6 +5,7 @@ import com.mahendra.tickets.domain.CreateEventRequest;
 import com.mahendra.tickets.domain.UpdateEventRequest;
 import com.mahendra.tickets.domain.UpdateTicketTypeRequest;
 import com.mahendra.tickets.domain.entities.Event;
+import com.mahendra.tickets.domain.entities.EventStatusEnum;
 import com.mahendra.tickets.domain.entities.TicketType;
 import com.mahendra.tickets.domain.entities.User;
 import com.mahendra.tickets.exceptions.EventNotFoundException;
@@ -140,5 +141,10 @@ public class EventServiceImpl implements EventService {
     @Override
     public void deleteEventForOrganizer(UUID organizerId, UUID id) {
         getEventForOrganizer(organizerId,id).ifPresent(eventRepository::delete);
+    }
+
+    @Override
+    public Page<Event> listPublishedEvents(Pageable pageable) {
+        return eventRepository.findByStatus(EventStatusEnum.PUBLISHED,pageable);
     }
 }
