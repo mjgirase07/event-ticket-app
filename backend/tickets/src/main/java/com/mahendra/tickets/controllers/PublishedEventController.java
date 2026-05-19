@@ -1,6 +1,7 @@
 package com.mahendra.tickets.controllers;
 
 import com.mahendra.tickets.domain.dtos.ListPublishedEventResponseDto;
+import com.mahendra.tickets.domain.entities.Event;
 import com.mahendra.tickets.mappers.EventMapper;
 import com.mahendra.tickets.services.EventService;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -21,8 +23,16 @@ public class PublishedEventController {
 
     @GetMapping
     public ResponseEntity<Page<ListPublishedEventResponseDto>> listPublishedEvents(
-        Pageable pageable
+            @RequestParam(required = false) String q,
+            Pageable pageable
     ){
-        return ResponseEntity.ok(eventService.listPublishedEvents(pageable).map(eventMapper::toListPublishedEventResponseDto));
+        Page<Event> events;
+        if(q!=null && !q.trim().isEmpty()){
+            events = eventService.searchPublishedEvents(q,pageable);
+        } else {
+            events = eventService.listPublishedEvents(pageable);
+        }
+
+        return ResponseEntity.ok(events.map(eventMapper::toListPublishedEventResponseDto));
     }
 }
