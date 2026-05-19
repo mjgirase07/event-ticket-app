@@ -1,10 +1,8 @@
 package com.mahendra.tickets.controllers;
 
 import com.mahendra.tickets.domain.CreateEventRequest;
-import com.mahendra.tickets.domain.dtos.CreateEventRequestDto;
-import com.mahendra.tickets.domain.dtos.CreateEventResponseDto;
-import com.mahendra.tickets.domain.dtos.GetEventDetailsResponseDto;
-import com.mahendra.tickets.domain.dtos.ListEventResponseDto;
+import com.mahendra.tickets.domain.UpdateEventRequest;
+import com.mahendra.tickets.domain.dtos.*;
 import com.mahendra.tickets.domain.entities.Event;
 import com.mahendra.tickets.mappers.EventMapper;
 import com.mahendra.tickets.services.EventService;
@@ -64,5 +62,18 @@ public class EventController {
                 .map(eventMapper::toGetEventDetailsResponseDto)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PutMapping(path = "/{eventId}")
+    public ResponseEntity<UpdateEventResponseDto> updateEvent(
+            @AuthenticationPrincipal Jwt jwt,
+            @PathVariable UUID eventId,
+            @Valid @RequestBody UpdateEventRequestDto updateEventRequestDto) {
+        UpdateEventRequest updateEventRequest = eventMapper.fromDto(updateEventRequestDto);
+        UUID userId = parseUserId(jwt);
+
+        Event updatedEvent = eventService.updateEventForOrganizer(userId,eventId,updateEventRequest);
+        UpdateEventResponseDto updateEventResponseDto = eventMapper.toUpdateEventResponseDto(updatedEvent);
+        return ResponseEntity.ok(updateEventResponseDto);
     }
 }
