@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/Ticket App.iml" filepath="$PROJECT_DIR$/.idea/Ticket App.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Backend/tickets/tickets.iml" filepath="$PROJECT_DIR$/Backend/tickets/tickets.iml" />
     </modules>
   </component>
 </project>
